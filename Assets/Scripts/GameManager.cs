@@ -1,8 +1,17 @@
 using UnityEngine;
+using TMPro;
+using UnityEditor.SearchService;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    //
+
+
+    //canvas
+    public int Lives;
+    public int Score;
+    [SerializeField] private TMP_Text livesText;
+    [SerializeField] private TMP_Text scoreText;
 
     //spawning
     [SerializeField] private float spawnInterval;
@@ -11,6 +20,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject fast;
     [SerializeField] private GameObject slow;
     [SerializeField] private GameObject[] spawner;
+
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip shoot;
+
+    private void Start()
+    {
+        Lives = 3;
+    }
 
     // Update is called once per frame
     void Update()
@@ -43,5 +60,23 @@ public class GameManager : MonoBehaviour
                 Instantiate(fast, spawner[Random.Range(0, 5)].transform);
                 break;
         }
+    }
+
+    public void PlayerHit()
+    {
+        Lives--;
+        livesText.text = "Lives: " + Lives;
+        audioSource.PlayOneShot(shoot);
+        if (Lives == 0)
+        {
+            SceneManager.LoadScene(0);
+        }
+    }
+
+    public void EnemyHit()
+    {
+        Score++;
+        scoreText.text = "Score: " + Score;
+        audioSource.PlayOneShot(shoot);
     }
 }

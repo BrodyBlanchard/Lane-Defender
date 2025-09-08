@@ -6,12 +6,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed;
     private float moveInput;
 
-    private bool shooting;
+    [SerializeField] private bool shooting;
     [SerializeField] private float fireCooldown;
     private float fireRate;
 
     public GameObject Bullet;
     public GameObject Fire;
+
+    //sounds
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip shoot;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -27,8 +31,9 @@ public class PlayerController : MonoBehaviour
 
         if (fireRate <= 0 && shooting == true)
         {
-            Instantiate(Bullet, this.transform);
-            Instantiate(Fire, this.transform);
+            Instantiate(Bullet, transform.position, Quaternion.identity);
+            Instantiate(Fire, transform.position, Quaternion.identity);
+            audioSource.PlayOneShot(shoot);
             fireRate = fireCooldown;
         }
 
@@ -43,16 +48,8 @@ public class PlayerController : MonoBehaviour
         moveInput = direction.Get<float>();
     }
 
-    private void OnShoot(InputAction.CallbackContext context)
+    private void OnShoot(InputValue value)
     {
-        if (context.performed)
-        {
-            shooting = true;
-        }
-
-        if (context.canceled)
-        {
-            shooting = false;
-        }
+        shooting = value.isPressed;
     }
 }
